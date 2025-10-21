@@ -1,8 +1,8 @@
 ﻿using System;
 
-public class Class1
+public class GameController
 {
-	public Class1()
+	public GameController()
 	{
 	}
 }
