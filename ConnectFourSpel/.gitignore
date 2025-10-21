@@ -1,0 +1,68 @@
+﻿# -------------------------------------------------------------
+# .gitignore för ASP.NET Core MVC (Visual Studio 2022)
+# -------------------------------------------------------------
+
+# Visual Studio / .NET build
+.vs/
+bin/
+obj/
+out/
+[Bb]uild/
+[Dd]ebug/
+[Rr]elease/
+*.user
+*.suo
+*.rsuser
+*.DotSettings.user
+*.sln.GhostDoc.xml
+*.nupkg
+*.snupkg
+*.log
+*.tmp
+
+# Testresultat
+TestResults/
+*.coverage
+*.coveragexml
+*.codecoverage
+*.trx
+
+# OS-specifika
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Publicerat / extern kod
+publish/
+wwwroot/lib/
+wwwroot/dist/
+
+# Paket & cache
+packages/
+.nuget/
+
+# Lokala konfigurationer & hemligheter
+appsettings.json
+appsettings.Development.json
+secrets.json
+.env
+*.db
+*.mdf
+*.ldf
+
+# Backupfiler
+*.bak
+*.swp
+*.orig
+
+# -------------------------------------------------------------
+# Filer som SKA checkas in
+# -------------------------------------------------------------
+!*.cs
+!*.cshtml
+!*.razor
+!*.json.example
+!*.md
+!*.csproj
+!*.sln
+!wwwroot/**
