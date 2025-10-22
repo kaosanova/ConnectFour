@@ -1,0 +1,76 @@
+﻿@model ConnectFourSpel.Models.GameBoard
+@{
+    var rows = Model.Grid.GetLength(0);
+    var cols = Model.Grid.GetLength(1);
+    var gameId = (string)ViewBag.GameId;
+}
+
+<h2>Fyra i Rad</h2>
+<p>
+    Tur: <strong id="turnLabel">@Model.CurrentTurn</strong>
+    @if (Model.IsFinished)
+    {
+        <span> — Slut! Vinnare: <strong>@Model.Winner</strong></span>
+    }
+</p>
+
+<div id="board" style="display:grid; gap:6px; grid-template-columns: repeat(@cols, 56px);">
+    @for (int r = 0; r < rows; r++)
+    {
+        for (int c = 0; c < cols; c++)
+        {
+            var cell = Model.Grid[r, c];
+            <div class="cell" data-row="@r" data-col="@c"
+                 style="width:56px;height:56px;border-radius:50%;border:2px solid #333;display:flex;align-items:center;justify-content:center;cursor:pointer;background:@CellBg(cell);">
+            </div>
+        }
+    }
+</div>
+
+<style>
+    .cell:hover {
+        outline: 2px dashed #999;
+    }</style>
+
+<script>
+    const cols = @cols;
+    const rows = @rows;
+    const gameId = "@gameId";
+
+    // Klick på en cell → ta dess kolumn
+    document.getElementById('board').addEventListener('click', async (e) => {
+        const cell = e.target.closest('.cell');
+        if (!cell) return;
+        const col = parseInt(cell.dataset.col);
+
+        const res = await fetch('@Url.Action("Drop", "Game")?id=' + gameId + '&col=' + col, { method: 'POST' });
+        if (!res.ok) {
+            const err = await res.json().catch(()=>({message:'Fel'}));
+            alert(err.message ?? 'Fel');
+            return;
+        }
+
+        const data = await res.json();
+
+        // Uppdatera UI – färg på cellen som fick brickan
+        const previousTurn = document.getElementById('turnLabel').innerText; // spelaren som precis la
+        const idx = data.row * cols + col;
+        const target = document.querySelectorAll('.cell')[idx];
+        target.style.background = (previousTurn === 'Player1') ? '#e74c3c' : '#3498db';
+
+        // Uppdatera tur/vinst
+        document.getElementById('turnLabel').innerText = data.currentTurn;
+        if (data.finished) {
+            alert(data.winner === 'Empty' ? 'Oavgjort!' : ('Vinnare: ' + data.winner));
+        }
+    });
+</script>
+
+@functions {
+    string CellBg(ConnectFourSpel.Models.CellState s) => s switch
+    {
+        ConnectFourSpel.Models.CellState.Player1 => "#e74c3c",
+        ConnectFourSpel.Models.CellState.Player2 => "#3498db",
+        _ => "white"
+    };
+}
