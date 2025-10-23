@@ -5,8 +5,8 @@
     var gameId = (string)ViewBag.GameId;
 }
 
-<h2>Fyra i Rad</h2>
-<p>
+<h2 style="text-align:center;">Fyra i Rad</h2>
+<p style="text-align:center;">
     Tur: <strong id="turnLabel">@Model.CurrentTurn</strong>
     @if (Model.IsFinished)
     {
@@ -14,23 +14,42 @@
     }
 </p>
 
-<div id="board" style="display:grid; gap:6px; grid-template-columns: repeat(@cols, 56px);">
-    @for (int r = 0; r < rows; r++)
-    {
-        for (int c = 0; c < cols; c++)
+<div class="board-center">
+    <div id="board" style="display:grid; gap:6px; grid-template-columns: repeat(@cols, 56px);">
+        @for (int r = 0; r < rows; r++)
         {
-            var cell = Model.Grid[r, c];
-            <div class="cell" data-row="@r" data-col="@c"
-                 style="width:56px;height:56px;border-radius:50%;border:2px solid #333;display:flex;align-items:center;justify-content:center;cursor:pointer;background:@CellBg(cell);">
-            </div>
+            for (int c = 0; c < cols; c++)
+            {
+                var cell = Model.Grid[r, c];
+                <div class="cell" data-row="@r" data-col="@c"
+                     style="width:56px;height:56px;border-radius:50%;border:2px solid #333;display:flex;align-items:center;justify-content:center;cursor:pointer;background:@CellBg(cell);">
+                </div>
+            }
         }
-    }
+    </div>
 </div>
 
+
 <style>
+    .board-center {
+        display: flex;
+        justify-content: center;
+        /* min-height: 60vh; align-items: center; */ /* valfritt för vertikal centrering */
+    }
+
+    .cell {
+        box-sizing: border-box;
+    }
+
+    #board {
+        place-items: center;
+    }
+
     .cell:hover {
         outline: 2px dashed #999;
-    }</style>
+    }
+</style>
+
 
 <script>
     const cols = @cols;
