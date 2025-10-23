@@ -1,4 +1,7 @@
 using ConnectFourSpel.Services;
+using Microsoft.AspNetCore.Connections;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +10,10 @@ builder.Services.AddControllersWithViews();
 
 // Vårt in-memory-lager för spel (DI)
 builder.Services.AddSingleton<IGameStore, InMemoryGameStore>();
+
+builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 
 var app = builder.Build();
 
@@ -29,3 +36,4 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+

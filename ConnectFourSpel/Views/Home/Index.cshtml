@@ -2,7 +2,29 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+
+@{
+    ViewData["Title"] = "Start";
+}
+
+<h2>Välkommen till Connect Four!</h2>
+
+@if (User.Identity?.IsAuthenticated ?? false)
+{
+    <p>Inloggad som <strong>@User.Identity!.Name</strong></p>
+
+    <p>
+        <a class="btn btn-primary" asp-controller="Game" asp-action="New">Starta nytt spel</a>
+        <a class="btn btn-secondary" asp-controller="Highscore" asp-action="Index">Highscore</a>
+        <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
+            <button type="submit" class="btn btn-danger">Logga ut</button>
+        </form>
+    </p>
+}
+else
+{
+    <p>
+        <a class="btn btn-primary" asp-controller="Auth" asp-action="Login">Logga in</a>
+        <a class="btn btn-success" asp-controller="Auth" asp-action="Register">Registrera</a>
+    </p>
+}
