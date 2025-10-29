@@ -15,8 +15,7 @@
 
     <p>
         <a class="btn btn-primary" asp-controller="Game" asp-action="New">Starta nytt spel</a>
-        <a class="btn btn-secondary" asp-controller="Highscore" asp-action="Index">Highscore</a>
-        <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
+        <form asp-controller="Login" asp-action="Logout" method="post" class="d-inline">
             <button type="submit" class="btn btn-danger">Logga ut</button>
         </form>
     </p>
@@ -24,7 +23,7 @@
 else
 {
     <p>
-        <a class="btn btn-primary" asp-controller="Auth" asp-action="Login">Logga in</a>
-        <a class="btn btn-success" asp-controller="Auth" asp-action="Register">Registrera</a>
+        <a class="btn btn-primary" asp-controller="Login" asp-action="Login">Logga in</a>
+        <a class="btn btn-success" asp-controller="Login" asp-action="Register">Registrera</a>
     </p>
 }

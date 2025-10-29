@@ -1,42 +1,37 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
+ï»¿using ConnectFourSpel.DAL;
 using ConnectFourSpel.Services;
-
-
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// MVC
-builder.Services.AddControllersWithViews();
+// ðŸ”Œ Ge Db.cs tillgÃ¥ng till appsettings.json
+Db.Configure(builder.Configuration);
 
-// Vårt in-memory-lager för spel (DI)
+// Register IGameStore so DI can resolve GameController
+// Use singleton so in-memory games persist across requests during app lifetime.
 builder.Services.AddSingleton<IGameStore, InMemoryGameStore>();
-builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddControllersWithViews();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(o =>
+{
+    o.Cookie.HttpOnly = true;
+    o.Cookie.IsEssential = true;
+    o.IdleTimeout = TimeSpan.FromHours(8);
+});
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(o =>
     {
-        o.LoginPath = "/Auth/Login";
-        o.LogoutPath = "/Auth/Logout";
-        o.Cookie.Name = "connect4.auth";
-        o.Cookie.HttpOnly = true;
+        o.LoginPath = "/Login/Login";
+        o.AccessDeniedPath = "/Login/Login";
         o.SlidingExpiration = true;
-        // sätt o.Cookie.SecurePolicy = CookieSecurePolicy.Always vid HTTPS/produktion
-        o.Cookie.SameSite = SameSiteMode.Lax;
     });
 
-
-builder.Services.AddSession(o =>
-{
-    o.IdleTimeout = TimeSpan.FromHours(8);
-    o.Cookie.Name = "connect4.session";
-    o.Cookie.HttpOnly = true;
-    o.Cookie.IsEssential = true;
-});
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Prod-fallback
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -45,18 +40,14 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
-app.UseSession();               
-app.UseAuthentication();       
-app.UseAuthorization();
-
 app.UseRouting();
 
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseSession();
 
-// Standardroute: /{controller}/{action}/{id?}
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
-
