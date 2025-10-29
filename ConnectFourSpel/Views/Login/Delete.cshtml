@@ -5,14 +5,15 @@
 
 <div class="container mt-4">
     <h2>@ViewData["Title"]</h2>
+
     <div class="alert alert-warning">
-        <strong>Är du säker?</strong> Detta raderar kontot permanent för
-        <code>@Model.Username</code> (Id: @Model.Id).
-        Åtgärden kan inte ångras.
+        <strong>Är du säker?</strong> Detta raderar kontot för
+        <code>@Model.Username</code> (Id: @Model.Id). Åtgärden kan inte ångras.
     </div>
 
-    <form asp-action="ConfirmDelete" asp-controller="Account" method="post">
+    <form asp-controller="Login" asp-action="ConfirmDelete" method="post">
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
         <button type="submit" class="btn btn-danger">Ja, radera mitt konto</button>
-        <a asp-action="Profile" asp-controller="Account" class="btn btn-secondary ms-2">Avbryt</a>
+        <a asp-controller="Login" asp-action="Profile" class="btn btn-secondary ms-2">Avbryt</a>
     </form>
 </div>

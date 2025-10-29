@@ -78,8 +78,9 @@ namespace ConnectFourSpel.Controllers
             return RedirectToAction(nameof(ChangePassword));
         }
     }
+}
 
-    public class EditUsernameVm
+ /*  public class EditUsernameVm
     {
         [Required, StringLength(40)]
         public string Username { get; set; } = "";
@@ -96,4 +97,5 @@ namespace ConnectFourSpel.Controllers
         [Required, Compare(nameof(NewPassword))]
         public string ConfirmNewPassword { get; set; } = "";
     }
-}
+}//
+ */

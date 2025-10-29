@@ -17,15 +17,16 @@
             </dl>
 
             <div class="d-flex gap-2">
-                <a asp-action="EditUsername" asp-controller="Login" class="btn btn-primary">
+                <a asp-action="EditUsername" asp-controller="Account" class="btn btn-primary">
                     Ändra användarnamn
                 </a>
-                <a asp-action="ChangePassword" asp-controller="Login" class="btn btn-secondary">
+                <a asp-action="ChangePassword" asp-controller="Account" class="btn btn-secondary">
                     Byt lösenord
                 </a>
-                <a asp-action="Delete" asp-controller="Login" class="btn btn-outline-danger">
+                <a asp-controller="Login" asp-action="Delete" class="btn btn-outline-danger">
                     Radera konto
                 </a>
+
 
                 <form asp-action="Logout" asp-controller="Login" method="post" class="ms-auto">
                     <button class="btn btn-outline-danger">Logga ut</button>

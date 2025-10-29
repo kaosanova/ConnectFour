@@ -101,5 +101,62 @@ namespace ConnectFourSpel.Controllers
             HttpContext.Session.SetInt32("UserId", user.Id);
             HttpContext.Session.SetString("Username", user.Username);
         }
+        [Authorize]
+        [HttpGet]
+        public IActionResult Profile()
+        {
+            var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(idStr)) return RedirectToAction(nameof(Login));
+
+            var id = int.Parse(idStr);
+            var user = UserMethods.GetById(id);
+            if (user == null) return NotFound();
+
+            return View(new ProfileVm { Id = user.Id, Username = user.Username });
+        }
+        // GET: /Login/Delete  (bekräftelsesida)
+        [Authorize]
+        [HttpGet]
+        public IActionResult Delete()
+        {
+            var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(idStr)) return RedirectToAction(nameof(Login));
+
+            var id = int.Parse(idStr);
+            var user = UserMethods.GetById(id);
+            if (user == null) return NotFound();
+
+            return View(new ProfileVm { Id = user.Id, Username = user.Username });
+        }
+
+        // POST: /Login/ConfirmDelete  (utför raderingen)
+        [Authorize]
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult ConfirmDelete()
+        {
+            var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(idStr)) return RedirectToAction(nameof(Login));
+
+            var id = int.Parse(idStr);
+
+            var ok = UserMethods.Delete(id); // din DAL-metod
+            if (!ok)
+            {
+                // Vanlig orsak: FK-beroenden i DB. Visa fel och gå tillbaka till Delete-vyn.
+                ModelState.AddModelError("", "Kunde inte radera kontot. Finns det relaterade poster?");
+                var user = UserMethods.GetById(id);
+                return View("Delete", new ProfileVm { Id = user?.Id ?? id, Username = user?.Username ?? "" });
+            }
+
+            // Logga ut + rensa session
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme)
+                .GetAwaiter().GetResult();
+            HttpContext.Session.Clear();
+
+            return RedirectToAction("Index", "Home");
+        }
+
+
     }
+
 }
