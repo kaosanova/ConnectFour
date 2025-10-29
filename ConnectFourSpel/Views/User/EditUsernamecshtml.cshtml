@@ -1,0 +1,11 @@
+﻿@model EditUsernameVm
+<h2>Redigera användarnamn</h2>
+<form asp-action="EditUsername" method="post">
+    <div asp-validation-summary="All"></div>
+    <div>
+        <label asp-for="Username"></label>
+        <input asp-for="Username" />
+        <span asp-validation-for="Username"></span>
+    </div>
+    <button type="submit">Spara</button>
+</form>

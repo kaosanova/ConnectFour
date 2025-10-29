@@ -1,0 +1,18 @@
+﻿@model ConnectFourSpel.Models.ProfileVm
+@{
+    ViewData["Title"] = "Radera konto";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+    <div class="alert alert-warning">
+        <strong>Är du säker?</strong> Detta raderar kontot permanent för
+        <code>@Model.Username</code> (Id: @Model.Id).
+        Åtgärden kan inte ångras.
+    </div>
+
+    <form asp-action="ConfirmDelete" asp-controller="Login" method="post">
+        <button type="submit" class="btn btn-danger">Ja, radera mitt konto</button>
+        <a asp-action="Profile" asp-controller="Login" class="btn btn-secondary ms-2">Avbryt</a>
+    </form>
+</div>

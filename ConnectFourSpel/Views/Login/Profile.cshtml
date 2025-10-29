@@ -1,0 +1,37 @@
+﻿@model ConnectFourSpel.Models.ProfileVm
+@{
+    ViewData["Title"] = "Min profil";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+    <div class="card shadow-sm mt-3">
+        <div class="card-body">
+
+            <dl class="row mb-3">
+                <dt class="col-sm-3">Användar-ID</dt>
+                <dd class="col-sm-9">@Model.Id</dd>
+
+                <dt class="col-sm-3">Användarnamn</dt>
+                <dd class="col-sm-9">@Model.Username</dd>
+            </dl>
+
+            <div class="d-flex gap-2">
+                <a asp-action="EditUsername" asp-controller="Login" class="btn btn-primary">
+                    Ändra användarnamn
+                </a>
+                <a asp-action="ChangePassword" asp-controller="Login" class="btn btn-secondary">
+                    Byt lösenord
+                </a>
+                <a asp-action="Delete" asp-controller="Login" class="btn btn-outline-danger">
+                    Radera konto
+                </a>
+
+                <form asp-action="Logout" asp-controller="Login" method="post" class="ms-auto">
+                    <button class="btn btn-outline-danger">Logga ut</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
