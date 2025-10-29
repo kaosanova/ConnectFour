@@ -1,11 +1,17 @@
-﻿@model EditUsernameVm
-<h2>Redigera användarnamn</h2>
-<form asp-action="EditUsername" method="post">
+﻿
+@model ConnectFourSpel.Models.EditUsernameVm
+@{
+    ViewData["Title"] = "Ändra användarnamn";
+}
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="EditUsername" asp-controller="Account" method="post">
     <div asp-validation-summary="All"></div>
-    <div>
-        <label asp-for="Username"></label>
-        <input asp-for="Username" />
-        <span asp-validation-for="Username"></span>
+    <div class="mb-3">
+        <label asp-for="Username" class="form-label"></label>
+        <input asp-for="Username" class="form-control" />
+        <span asp-validation-for="Username" class="text-danger"></span>
     </div>
-    <button type="submit">Spara</button>
+    <button type="submit" class="btn btn-primary">Spara</button>
+    <a asp-action="Profile" asp-controller="Account" class="btn btn-secondary ms-2">Avbryt</a>
 </form>
