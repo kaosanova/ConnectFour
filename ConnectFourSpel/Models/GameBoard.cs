@@ -13,7 +13,7 @@ public class GameBoard
     {
         _size = size ?? new BoardSize();
         Grid = new CellState[_size.Rows, _size.Cols];
-        // Allt startar med Empty
+        
     }
 
     public (bool ok, int row) DropDisc(int col)
@@ -21,7 +21,7 @@ public class GameBoard
         if (IsFinished) return (false, -1);
         if (col < 0 || col >= _size.Cols) return (false, -1);
 
-        // Släpp bricka i första lediga plats från botten
+        
         for (int row = _size.Rows - 1; row >= 0; row--)
         {
             if (Grid[row, col] == CellState.Empty)
@@ -36,12 +36,12 @@ public class GameBoard
                 }
                 else if (MovesCount == _size.Rows * _size.Cols)
                 {
-                    // Oavgjort
+                    
                     IsFinished = true;
                 }
                 else
                 {
-                    // Växla tur
+                   
                     CurrentTurn = (CurrentTurn == CellState.Player1) ? CellState.Player2 : CellState.Player1;
                 }
 
@@ -49,7 +49,7 @@ public class GameBoard
             }
         }
 
-        // Kolumnen är full
+       
         return (false, -1);
     }
 
@@ -58,7 +58,7 @@ public class GameBoard
         var who = Grid[row, col];
         if (who == CellState.Empty) return false;
 
-        // H, V, diag /
+       
         return Count(row, col, 0, 1, who) + Count(row, col, 0, -1, who) - 1 >= 4 ||
                Count(row, col, 1, 0, who) + Count(row, col, -1, 0, who) - 1 >= 4 ||
                Count(row, col, 1, 1, who) + Count(row, col, -1, -1, who) - 1 >= 4 ||

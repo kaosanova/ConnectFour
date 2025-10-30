@@ -1,5 +1,5 @@
-﻿using System.Collections.Concurrent;
-using ConnectFourSpel.Models;
+﻿using ConnectFourSpel.Models;
+using System.Collections.Concurrent;
 
 namespace ConnectFourSpel.Services;
 

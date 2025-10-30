@@ -2,10 +2,6 @@
 using ConnectFourSpel.Models;
 using Microsoft.AspNetCore.Mvc;
 
-using ConnectFourSpel.DAL;
-using ConnectFourSpel.Models;
-using Microsoft.AspNetCore.Mvc;
-
 namespace ConnectFourSpel.Controllers
 {
     public class GameController : Controller
@@ -24,9 +20,9 @@ namespace ConnectFourSpel.Controllers
             var vm = GameMethods.GetWithMoves(id);
             if (vm == null) return NotFound();
 
-            var board = RebuildBoard(vm.Moves); // helper nedan
+            var board = RebuildBoard(vm.Moves);
             ViewBag.GameId = id;
-            return View(board); // Play.cshtml: @model GameBoard
+            return View(board);
         }
 
         [HttpPost]
@@ -38,7 +34,7 @@ namespace ConnectFourSpel.Controllers
 
             var board = RebuildBoard(vm.Moves);
 
-            // Validera kolumn
+
             var cols = board.Grid.GetLength(1);
             if (col < 0 || col >= cols)
             {
@@ -46,7 +42,7 @@ namespace ConnectFourSpel.Controllers
                 return RedirectToAction(nameof(Play), new { id });
             }
 
-            // Hitta landningsrad
+
             var row = FindLandingRow(board, col);
             if (row < 0)
             {
@@ -54,39 +50,38 @@ namespace ConnectFourSpel.Controllers
                 return RedirectToAction(nameof(Play), new { id });
             }
 
-            // Bestäm spelare från antal drag
+
             var playerNo = (vm.Moves.Count % 2 == 0) ? 1 : 2;
             var cell = (playerNo == 1) ? CellState.Player1 : CellState.Player2;
 
-            // Uppdatera brädet och spara draget
+
             board.Grid[row, col] = cell;
             MoveMethods.Add(id, playerNo, col, row);
 
-            // Vinst?
+
             if (IsWinningMove(board, row, col, cell))
             {
-                GameMethods.Delete(id); // din policy: radera när klart
-                                        // Visa gärna ett meddelande på nästa sida om du vill
+                GameMethods.Delete(id);
                 return RedirectToAction(nameof(Done));
             }
 
-            // Tillbaka till brädet
+
             return RedirectToAction(nameof(Play), new { id });
         }
 
         [HttpGet] public IActionResult Done() => View();
 
-        // ===== Helpers (enkla, behåll i controllern) =====
+
 
         private static GameBoard RebuildBoard(IList<MoveDetails> moves)
         {
-            var board = new GameBoard(); // default 6x7
+            var board = new GameBoard();
             foreach (var m in moves.OrderBy(x => x.MoveNo))
             {
                 var cell = (m.PlayerNo == 1) ? CellState.Player1 : CellState.Player2;
                 board.Grid[m.Row, m.Col] = cell;
             }
-            // Sätt INTE board.CurrentTurn här – setter är inte publik och behövs inte.
+
             return board;
         }
 

@@ -31,8 +31,8 @@ VALUES (@g, @n, @p, @c, @r);", conn);
                 GameId = (int)r["GameId"],
                 MoveNo = (int)r["MoveNo"],
                 PlayerNo = (byte)r["PlayerNo"],
-                Col = (int)r["Col"],     // int
-                Row = (int)r["Row"],     // int
+                Col = (int)r["Col"],
+                Row = (int)r["Row"],
                 MadeAt = (DateTime)r["MadeAt"]
             };
         }

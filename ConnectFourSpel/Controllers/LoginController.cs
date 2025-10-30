@@ -1,10 +1,10 @@
-﻿using System.Security.Claims;
-using ConnectFourSpel.DAL;
+﻿using ConnectFourSpel.DAL;
+using ConnectFourSpel.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using ConnectFourSpel.Models;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 
 namespace ConnectFourSpel.Controllers
@@ -24,10 +24,10 @@ namespace ConnectFourSpel.Controllers
                 return View();
             }
 
-            // SÄKERT: BCrypt – behåll detta
+
             var ok = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
 
-            // SUPERSIMPELT (om du vill utan hash): var ok = (user.PasswordHash == password);
+
 
             if (!ok)
             {
@@ -57,10 +57,10 @@ namespace ConnectFourSpel.Controllers
                 return View();
             }
 
-            // SÄKERT: hash
+
             var hash = BCrypt.Net.BCrypt.HashPassword(password);
 
-            // SUPERSIMPELT (utan hash): var hash = password;
+
 
             var newId = UserMethods.Create(username, hash);
 
@@ -114,7 +114,7 @@ namespace ConnectFourSpel.Controllers
 
             return View(new ProfileVm { Id = user.Id, Username = user.Username });
         }
-        // GET: /Login/Delete  (bekräftelsesida)
+
         [Authorize]
         [HttpGet]
         public IActionResult Delete()
@@ -129,7 +129,7 @@ namespace ConnectFourSpel.Controllers
             return View(new ProfileVm { Id = user.Id, Username = user.Username });
         }
 
-        // POST: /Login/ConfirmDelete  (utför raderingen)
+
         [Authorize]
         [HttpPost, ValidateAntiForgeryToken]
         public IActionResult ConfirmDelete()
@@ -139,16 +139,16 @@ namespace ConnectFourSpel.Controllers
 
             var id = int.Parse(idStr);
 
-            var ok = UserMethods.Delete(id); // din DAL-metod
+            var ok = UserMethods.Delete(id);
             if (!ok)
             {
-                // Vanlig orsak: FK-beroenden i DB. Visa fel och gå tillbaka till Delete-vyn.
+
                 ModelState.AddModelError("", "Kunde inte radera kontot. Finns det relaterade poster?");
                 var user = UserMethods.GetById(id);
                 return View("Delete", new ProfileVm { Id = user?.Id ?? id, Username = user?.Username ?? "" });
             }
 
-            // Logga ut + rensa session
+
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme)
                 .GetAwaiter().GetResult();
             HttpContext.Session.Clear();

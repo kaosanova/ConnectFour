@@ -4,7 +4,7 @@ namespace ConnectFourSpel.DAL
 {
     public static class GameMethods
     {
-        // Väg A: skapa spel mot SessionId
+
         public static int Create(string sessionId)
         {
             using var conn = Db.Open();
@@ -30,16 +30,16 @@ WHERE Id=@id;", conn);
             using var r = cmd.ExecuteReader();
             if (!r.Read()) return null;
 
-            // OBS: tabellen har inte Player1Id/Status/... → sätt rimliga default
+
             var createdAt = (DateTime)r["CreatedAt"];
             return new GameDetails
             {
                 Id = (int)r["Id"],
-                Player1Id = 0,            // default – du använder PlayerNo i tbl_Move
+                Player1Id = 0,
                 Player2Id = null,
-                Status = 0,               // 0=Active
+                Status = 0,
                 WinnerUserId = null,
-                StartedAt = createdAt,    // mappa CreatedAt -> StartedAt
+                StartedAt = createdAt,
                 FinishedAt = null
             };
         }
@@ -52,7 +52,7 @@ WHERE Id=@id;", conn);
             return new GameWithMoves { Game = g, Moves = moves };
         }
 
-        // Minimal policy: kasta bort spelet när det är klart
+
         public static void Delete(int gameId)
         {
             using var conn = Db.Open();
