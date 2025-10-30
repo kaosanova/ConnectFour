@@ -2,10 +2,16 @@
 @{
     var rows = Model.Grid.GetLength(0);
     var cols = Model.Grid.GetLength(1);
-    var gameId = (string)ViewBag.GameId;
+    var gameId = (int)ViewBag.GameId;   // <-- int, inte string
 }
 
 <h2 style="text-align:center;">Fyra i Rad</h2>
+
+@if (TempData["Err"] is string err && !string.IsNullOrWhiteSpace(err))
+{
+    <div class="alert alert-warning text-center">@err</div>
+}
+
 <p style="text-align:center;">
     Tur: <strong id="turnLabel">@Model.CurrentTurn</strong>
     @if (Model.IsFinished)
@@ -13,6 +19,15 @@
         <span> — Slut! Vinnare: <strong>@Model.Winner</strong></span>
     }
 </p>
+
+<!-- Knapprad som POST:ar Drop med id + vald kolumn -->
+<form asp-action="Drop" asp-route-id="@gameId" method="post" class="mb-3" style="text-align:center">
+    @Html.AntiForgeryToken()
+    @for (int c = 0; c < cols; c++)
+    {
+        <button type="submit" name="col" value="@c" class="btn btn-sm btn-primary mx-1">↓ @c</button>
+    }
+</form>
 
 <div class="board-center">
     <div id="board" style="display:grid; gap:6px; grid-template-columns: repeat(@cols, 56px);">
@@ -29,12 +44,10 @@
     </div>
 </div>
 
-
 <style>
     .board-center {
         display: flex;
         justify-content: center;
-        /* min-height: 60vh; align-items: center; */ /* valfritt för vertikal centrering */
     }
 
     .cell {
@@ -49,41 +62,6 @@
         outline: 2px dashed #999;
     }
 </style>
-
-
-<script>
-    const cols = @cols;
-    const rows = @rows;
-    const gameId = "@gameId";
-
-    // Klick på en cell → ta dess kolumn
-    document.getElementById('board').addEventListener('click', async (e) => {
-        const cell = e.target.closest('.cell');
-        if (!cell) return;
-        const col = parseInt(cell.dataset.col);
-
-        const res = await fetch('@Url.Action("Drop", "Game")?id=' + gameId + '&col=' + col, { method: 'POST' });
-        if (!res.ok) {
-            const err = await res.json().catch(()=>({message:'Fel'}));
-            alert(err.message ?? 'Fel');
-            return;
-        }
-
-        const data = await res.json();
-
-        // Uppdatera UI – färg på cellen som fick brickan
-        const previousTurn = document.getElementById('turnLabel').innerText; // spelaren som precis la
-        const idx = data.row * cols + col;
-        const target = document.querySelectorAll('.cell')[idx];
-        target.style.background = (previousTurn === 'Player1') ? '#e74c3c' : '#3498db';
-
-        // Uppdatera tur/vinst
-        document.getElementById('turnLabel').innerText = data.currentTurn;
-        if (data.finished) {
-            alert(data.winner === 'Empty' ? 'Oavgjort!' : ('Vinnare: ' + data.winner));
-        }
-    });
-</script>
 
 @functions {
     string CellBg(ConnectFourSpel.Models.CellState s) => s switch
