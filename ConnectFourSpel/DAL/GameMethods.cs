@@ -60,5 +60,6 @@ WHERE Id=@id;", conn);
             cmd.Parameters.AddWithValue("@id", gameId);
             cmd.ExecuteNonQuery();
         }
+
     }
 }

@@ -21,13 +21,23 @@
 </p>
 
 <!-- Knapprad som POST:ar Drop med id + vald kolumn -->
-<form asp-action="Drop" asp-route-id="@gameId" method="post" class="mb-3" style="text-align:center">
+
+<form asp-action="Drop" asp-route-id="@gameId" method="post"
+      class="mb-3 d-flex justify-content-center" style="gap: 25px;">
+
     @Html.AntiForgeryToken()
+
     @for (int c = 0; c < cols; c++)
+
     {
-        <button type="submit" name="col" value="@c" class="btn btn-sm btn-primary mx-1">↓ @c</button>
+
+        <button type="submit" name="col" value="@c" class="btn btn-sm btn-primary">↓ @c</button>
+
     }
+
 </form>
+
+
 
 <div class="board-center">
     <div id="board" style="display:grid; gap:6px; grid-template-columns: repeat(@cols, 56px);">

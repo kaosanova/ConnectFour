@@ -2,6 +2,10 @@
 using ConnectFourSpel.Models;
 using Microsoft.AspNetCore.Mvc;
 
+using ConnectFourSpel.DAL;
+using ConnectFourSpel.Models;
+using Microsoft.AspNetCore.Mvc;
+
 namespace ConnectFourSpel.Controllers
 {
     public class GameController : Controller
@@ -107,5 +111,6 @@ namespace ConnectFourSpel.Controllers
             int line(int dr, int dc) => 1 + CountDir(dr, dc) + CountDir(-dr, -dc);
             return line(0, 1) >= 4 || line(1, 0) >= 4 || line(1, 1) >= 4 || line(1, -1) >= 4;
         }
+
     }
 }
