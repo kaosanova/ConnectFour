@@ -26,10 +26,7 @@ namespace ConnectFourSpel.DAL
         public static int Create(string username, string passwordHash)
         {
             using var conn = Db.Open();
-            using var cmd = new SqlCommand(@"
-INSERT INTO dbo.Users (Username, PasswordHash)
-OUTPUT INSERTED.Id
-VALUES (@u, @p);", conn);
+            using var cmd = new SqlCommand(@"INSERT INTO dbo.Users (Username, PasswordHash)bOUTPUT INSERTED.IdbVALUES (@u, @p);", conn);
 
             cmd.Parameters.AddWithValue("@u", username);
             cmd.Parameters.AddWithValue("@p", passwordHash);
@@ -39,11 +36,7 @@ VALUES (@u, @p);", conn);
         public static bool Update(int id, string username, string passwordHash)
         {
             using var conn = Db.Open();
-            using var cmd = new SqlCommand(@"
-UPDATE dbo.Users
-SET Username = @u,
-    PasswordHash = @p
-WHERE Id = @id;", conn);
+            using var cmd = new SqlCommand(@"UPDATE dbo.Users SET Username = @u,PasswordHash = @pWHERE Id = @id;", conn);
 
             cmd.Parameters.AddWithValue("@u", username);
             cmd.Parameters.AddWithValue("@p", passwordHash);
@@ -73,9 +66,7 @@ WHERE Id = @id;", conn);
         public static bool Delete(int id)
         {
             using var conn = Db.Open();
-            using var cmd = new SqlCommand(@"
-DELETE FROM dbo.Users
-WHERE Id = @id;", conn);
+            using var cmd = new SqlCommand(@"DELETE FROM dbo.Users WHERE Id = @id;", conn);
 
             cmd.Parameters.AddWithValue("@id", id);
             var affected = cmd.ExecuteNonQuery();
