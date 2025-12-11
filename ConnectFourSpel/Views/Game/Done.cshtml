@@ -1,6 +1,19 @@
 ﻿@{
-    ViewData["Title"] = "Done";
+    ViewData["Title"] = "Spelet är slut";
+    var winnerName = ViewBag.WinnerName as string;
 }
-<h2>Grattis Player1!</h2>
-<p>Matchen är avslutad.</p>
-<p><a asp-action="Index" asp-controller="Game">Till Startsidan</a></p>
+
+<h2>Spelet är slut!</h2>
+
+@if (!string.IsNullOrEmpty(winnerName))
+{
+    <p>Vinnare: <strong>@winnerName</strong></p>
+}
+else
+{
+    <p>Spelet är avslutat.</p>
+}
+
+<p>
+    <a asp-action="Index" asp-controller="Home">Till startsidan</a>
+</p>

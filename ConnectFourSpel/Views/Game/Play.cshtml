@@ -1,43 +1,90 @@
 ﻿@model ConnectFourSpel.Models.GameBoard
+
 @{
     var rows = Model.Grid.GetLength(0);
     var cols = Model.Grid.GetLength(1);
-    var gameId = (int)ViewBag.GameId;   // <-- int, inte string
+    var gameId = (int)ViewBag.GameId;
+
+    // Spelinfo från kontrollern
+    var game = ViewBag.Game as ConnectFourSpel.DAL.GameDetails;
+    var movesCount = (int)ViewBag.MovesCount;
+
+    // Inloggad användare
+    var currentUserId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
+
+    var isPlayer1 = game != null && currentUserId == game.Player1Id;
+    var isPlayer2 = game != null && game.Player2Id.HasValue && currentUserId == game.Player2Id.Value;
+
+    // 1,2,1,2... baserat på antal drag
+    var currentPlayerNo = (movesCount % 2 == 0) ? 1 : 2;
+
+    bool isCurrentPlayersTurn =
+        (currentPlayerNo == 1 && isPlayer1) ||
+        (currentPlayerNo == 2 && isPlayer2);
+
+    bool hasPlayer2 = game != null && game.Player2Id.HasValue;
 }
 
-<h2 style="text-align:center;">Fyra i Rad</h2>
+<h2 class="text-center">Fyra i Rad</h2>
 
 @if (TempData["Err"] is string err && !string.IsNullOrWhiteSpace(err))
 {
     <div class="alert alert-warning text-center">@err</div>
 }
 
-<p style="text-align:center;">
-    Tur: <strong id="turnLabel">@Model.CurrentTurn</strong>
-    @if (Model.IsFinished)
-    {
-        <span> — Slut! Vinnare: <strong>@Model.Winner</strong></span>
-    }
-</p>
+@if (TempData["Msg"] is string msg && !string.IsNullOrWhiteSpace(msg))
+{
+    <div class="alert alert-success text-center">@msg</div>
+}
 
-<!-- Knapprad som POST:ar Drop med id + vald kolumn -->
+@if (game != null)
+{
+    <div class="text-center mb-3">
+        <p>
+            <strong>Spelare 1 (röd):</strong> @game.Player1Id<br />
+            <strong>Spelare 2 (blå):</strong> @(game.Player2Id?.ToString() ?? "Väntar på motståndare...")
+        </p>
 
-<form asp-action="Drop" asp-route-id="@gameId" method="post"
-      class="mb-3 d-flex justify-content-center" style="gap: 25px;">
+        <p>
+            Tur: <strong>Player @currentPlayerNo</strong>
+        </p>
 
-    @Html.AntiForgeryToken()
+        @if (!hasPlayer2)
+        {
+            <div class="alert alert-info">
+                Väntar på att en motståndare ansluter till spelet...
+            </div>
+        }
+        else if (!isCurrentPlayersTurn)
+        {
+            <div class="alert alert-info">
+                Väntar på motståndarens drag...
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-success">
+                Det är <strong>din</strong> tur att spela!
+            </div>
+        }
+    </div>
+}
 
-    @for (int c = 0; c < cols; c++)
+@* Knappar för att släppa brickor – bara när vi har två spelare och det är din tur *@
+@if (hasPlayer2 && isCurrentPlayersTurn)
+{
+    <form asp-action="Drop" asp-route-id="@gameId" method="post"
+          class="mb-3 d-flex justify-content-center" style="gap: 25px;">
+        @Html.AntiForgeryToken()
 
-    {
-
-        <button type="submit" name="col" value="@c" class="btn btn-sm btn-primary">↓ @c</button>
-
-    }
-
-</form>
-
-
+        @for (int c = 0; c < cols; c++)
+        {
+            <button type="submit" name="col" value="@c" class="btn btn-sm btn-primary">
+                ↓ @c
+            </button>
+        }
+    </form>
+}
 
 <div class="board-center">
     <div id="board" style="display:grid; gap:6px; grid-template-columns: repeat(@cols, 56px);">
@@ -46,8 +93,20 @@
             for (int c = 0; c < cols; c++)
             {
                 var cell = Model.Grid[r, c];
-                <div class="cell" data-row="@r" data-col="@c"
-                     style="width:56px;height:56px;border-radius:50%;border:2px solid #333;display:flex;align-items:center;justify-content:center;cursor:pointer;background:@CellBg(cell);">
+                <div class="cell"
+                     data-row="@r"
+                     data-col="@c"
+                     style="
+                                 width:56px;
+                                 height:56px;
+                                 border-radius:50%;
+                                 border:2px solid #333;
+                                 display:flex;
+                                 align-items:center;
+                                 justify-content:center;
+                                 cursor:pointer;
+                                 background:@CellBg(cell);
+                             ">
                 </div>
             }
         }
@@ -76,8 +135,8 @@
 @functions {
     string CellBg(ConnectFourSpel.Models.CellState s) => s switch
     {
-        ConnectFourSpel.Models.CellState.Player1 => "#e74c3c",
-        ConnectFourSpel.Models.CellState.Player2 => "#3498db",
+        ConnectFourSpel.Models.CellState.Player1 => "#e74c3c", // röd
+        ConnectFourSpel.Models.CellState.Player2 => "#3498db", // blå
         _ => "white"
     };
 }

@@ -18,6 +18,11 @@
             @Html.AntiForgeryToken()
             <button type="submit" class="btn btn-primary">Starta nytt spel</button>
         </form>
+        <form asp-controller="Game" asp-action="Join" method="post" class="d-inline">
+            @Html.AntiForgeryToken()
+            <input type="number" name="id" placeholder="GameId" class="form-control d-inline-block" style="width:100px;" />
+            <button type="submit" class="btn btn-secondary">Gå med i spel</button>
+        </form>
         <form asp-controller="Login" asp-action="Logout" method="post" class="d-inline">
             <button type="submit" class="btn btn-danger">Logga ut</button>
         </form>
